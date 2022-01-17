@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>aspnet-CinemateAPI-13976B42-A386-4D2C-BB4D-B9783B6165CF</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.22" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.18" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.18" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.18" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.18" />
+  </ItemGroup>
+
+</Project>
