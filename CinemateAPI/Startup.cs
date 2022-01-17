@@ -41,7 +41,7 @@ namespace CinemateAPI
                 .AddEntityFrameworkStores<CinemateDbContext>();
 
             var appSettingsSection = Configuration.GetSection("AppSettings");
-            var movieDbConfigSection = Configuration.GetSection("MovieDbConfig");
+            var movieDbConfigSection = Configuration.GetSection("MoviesDbConfig");
 
             services.Configure<AppSettings>(appSettingsSection);
             services.Configure<MovieDbConfig>(movieDbConfigSection);
