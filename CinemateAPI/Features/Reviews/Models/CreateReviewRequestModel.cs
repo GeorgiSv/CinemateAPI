@@ -15,5 +15,8 @@
 
         [Required]
         public string MovieId { get; set; }
+
+        [Required]
+        public int MovieDbId { get; set; }
     }
 }

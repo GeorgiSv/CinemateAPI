@@ -1,26 +1,30 @@
-﻿
-namespace CinemateAPI.Features.Reviews
+﻿namespace CinemateAPI.Features.Reviews
 {
-    using CinemateAPI.Data;
-    using CinemateAPI.Data.Models;
-    using CinemateAPI.Features.Reviews.Models;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
+
+    using CinemateAPI.Data;
+    using CinemateAPI.Data.Models;
+    using CinemateAPI.Features.Reviews.Models;
+    using System.Net.Http;
+
     public class ReviewController : ApiController
     {
         private readonly CinemateDbContext db;
         private readonly IHttpContextAccessor httpContextAccessor;
+        private readonly IReviewService reviewService;
 
-        public ReviewController(CinemateDbContext db, IHttpContextAccessor httpContextAccessor)
+        public ReviewController(CinemateDbContext db, IHttpContextAccessor httpContextAccessor, IReviewService reviewService)
         {
             this.db = db;
             this.httpContextAccessor = httpContextAccessor;
+            this.reviewService = reviewService;
         }
 
         [HttpGet]
@@ -48,35 +52,12 @@ namespace CinemateAPI.Features.Reviews
         public async Task<int> CreateReview(CreateReviewRequestModel input)
         {
             var user = this.httpContextAccessor.HttpContext?.User;
-
             Console.WriteLine(user.Identity.Name);
+            
 
-            var movie = await db.MoviesDetails
-                .Where(x => x.Id == input.MovieId)
-                .FirstOrDefaultAsync();
+            // Validate input data here
 
-            if (movie == null)
-            {
-
-            }
-
-            var review = new Review()
-            {
-                AuthorId = input.AuthorId,
-                Summary = input.Title,
-                Content = input.Content,
-                MovieDetailsId = input.MovieId,
-                CreationDate = DateTime.Now
-            };
-
-
-
-            var result = await db.Reviews.AddAsync(review);
-
-            Console.WriteLine(result);
-
-            await db.SaveChangesAsync();
-
+            var result = await this.reviewService.CreateReview(input);
 
             return 1;
         }

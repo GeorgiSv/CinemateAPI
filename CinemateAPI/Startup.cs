@@ -1,5 +1,7 @@
 namespace CinemateAPI
 {
+    using System;
+
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Identity;
@@ -12,7 +14,8 @@ namespace CinemateAPI
     using CinemateAPI.Data.Models;
     using CinemateAPI.Infrastructure.Extensions;
     using CinemateAPI.Features.Identity;
-    using System;
+    using CinemateAPI.Infrastructure.MovieDb;
+    using CinemateAPI.Features.Reviews;
 
     public class Startup
     {
@@ -57,6 +60,9 @@ namespace CinemateAPI
             });
 
             services.AddTransient<IIdentityService, IdentityService>();
+            services.AddTransient<IReviewService, ReviewService>();
+            services.AddTransient<MovieDbService>();
+
             services.AddControllers();
         }
 

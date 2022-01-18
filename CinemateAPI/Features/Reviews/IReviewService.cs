@@ -1,11 +1,10 @@
 ﻿namespace CinemateAPI.Features.Reviews
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
+    using CinemateAPI.Features.Reviews.Models;
     using System.Threading.Tasks;
 
-    public class IReviewService
+    public interface IReviewService
     {
+        public Task<bool> CreateReview(CreateReviewRequestModel input);
     }
 }

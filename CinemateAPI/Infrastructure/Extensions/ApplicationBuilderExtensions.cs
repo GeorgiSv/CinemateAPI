@@ -1,10 +1,11 @@
 ﻿namespace CinemateAPI.Infrastructure.Extensions
 {
-    using CinemateAPI.Data;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
 
+    using CinemateAPI.Data;
+    
     public static class ApplicationBuilderExtensions
     {
         public static void ApplyMigrations(this IApplicationBuilder app)
