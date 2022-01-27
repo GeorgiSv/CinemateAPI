@@ -16,6 +16,7 @@ namespace CinemateAPI
     using CinemateAPI.Features.Identity;
     using CinemateAPI.Infrastructure.MovieDb;
     using CinemateAPI.Features.Reviews;
+    using System.Linq;
 
     public class Startup
     {
@@ -63,6 +64,11 @@ namespace CinemateAPI
             services.AddTransient<IReviewService, ReviewService>();
             services.AddTransient<MovieDbService>();
 
+            services.AddSwaggerGen(c =>
+            {
+                c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+            });
+
             services.AddControllers();
         }
 
@@ -83,6 +89,13 @@ namespace CinemateAPI
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Cinemate API");
+            });
 
             app.UseEndpoints(endpoints =>
             {
