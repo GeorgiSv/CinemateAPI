@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
 
     public class MovieDetails
     {
@@ -14,12 +15,16 @@
 
         public string Id { get; set; }
 
+        [Required]
         public string MovideDbId { get; set; }
 
+        [Required]
         public string Title { get; set; }
 
+        [Required]
         public string ImageUrl { get; set; }
 
+        [Required]
         public string Description { get; set; }
 
         public string  HomePage { get; set; }

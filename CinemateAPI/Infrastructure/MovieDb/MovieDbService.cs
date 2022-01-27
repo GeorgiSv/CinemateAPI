@@ -40,7 +40,6 @@
                 Console.WriteLine("Failed to fetch external movie from MovieDbApi! Error: " + ex.Message);
                 throw;
             }
-  
         }
     }
 }

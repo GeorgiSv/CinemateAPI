@@ -1,8 +1,9 @@
 ﻿namespace CinemateAPI.Data
 {
-    using CinemateAPI.Data.Models;
     using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore;
+
+    using CinemateAPI.Data.Models;
 
     public class CinemateDbContext : IdentityDbContext<User>
     {
@@ -26,10 +27,7 @@
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-
             base.OnConfiguring(optionsBuilder);
-
-
         }
 
         protected override void OnModelCreating(ModelBuilder builder)

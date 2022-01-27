@@ -14,9 +14,6 @@
         public string Content { get; set; }
 
         [Required]
-        public string MovieId { get; set; }
-
-        [Required]
         public int MovieDbId { get; set; }
     }
 }

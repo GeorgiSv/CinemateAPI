@@ -1,10 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-using System;
 
-namespace CinemateAPI.Data.Migrations
+namespace CinemateAPI.Migrations
 {
-    public partial class CreateIdentitySchema : Migration
+    public partial class initialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -40,7 +39,8 @@ namespace CinemateAPI.Data.Migrations
                     TwoFactorEnabled = table.Column<bool>(nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
-                    AccessFailedCount = table.Column<int>(nullable: false)
+                    AccessFailedCount = table.Column<int>(nullable: false),
+                    ProfilePicture = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -48,11 +48,28 @@ namespace CinemateAPI.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "MoviesDetails",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    MovideDbId = table.Column<string>(nullable: false),
+                    Title = table.Column<string>(nullable: false),
+                    ImageUrl = table.Column<string>(nullable: false),
+                    Description = table.Column<string>(nullable: false),
+                    HomePage = table.Column<string>(nullable: true),
+                    CreationDate = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_MoviesDetails", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     RoleId = table.Column<string>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true)
@@ -73,7 +90,7 @@ namespace CinemateAPI.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true)
@@ -93,8 +110,8 @@ namespace CinemateAPI.Data.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(maxLength: 128, nullable: false),
-                    ProviderKey = table.Column<string>(maxLength: 128, nullable: false),
+                    LoginProvider = table.Column<string>(nullable: false),
+                    ProviderKey = table.Column<string>(nullable: false),
                     ProviderDisplayName = table.Column<string>(nullable: true),
                     UserId = table.Column<string>(nullable: false)
                 },
@@ -138,8 +155,8 @@ namespace CinemateAPI.Data.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<string>(nullable: false),
-                    LoginProvider = table.Column<string>(maxLength: 128, nullable: false),
-                    Name = table.Column<string>(maxLength: 128, nullable: false),
+                    LoginProvider = table.Column<string>(nullable: false),
+                    Name = table.Column<string>(nullable: false),
                     Value = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -151,6 +168,112 @@ namespace CinemateAPI.Data.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Reviews",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    Summary = table.Column<string>(maxLength: 150, nullable: false),
+                    Content = table.Column<string>(maxLength: 2000, nullable: false),
+                    CreationDate = table.Column<DateTime>(nullable: false),
+                    AuthorId = table.Column<string>(nullable: false),
+                    MovieDetailsId = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Reviews", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Reviews_AspNetUsers_AuthorId",
+                        column: x => x.AuthorId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Reviews_MoviesDetails_MovieDetailsId",
+                        column: x => x.MovieDetailsId,
+                        principalTable: "MoviesDetails",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UsersFavourites",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(nullable: false),
+                    MovieDetailsId = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UsersFavourites", x => new { x.UserId, x.MovieDetailsId });
+                    table.ForeignKey(
+                        name: "FK_UsersFavourites_MoviesDetails_MovieDetailsId",
+                        column: x => x.MovieDetailsId,
+                        principalTable: "MoviesDetails",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UsersFavourites_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Comment",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Content = table.Column<string>(maxLength: 2000, nullable: false),
+                    CreationDate = table.Column<DateTime>(nullable: false),
+                    AuthorId = table.Column<string>(nullable: false),
+                    ReviewId1 = table.Column<string>(nullable: true),
+                    ReviewId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Comment", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Comment_AspNetUsers_AuthorId",
+                        column: x => x.AuthorId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Comment_Reviews_ReviewId1",
+                        column: x => x.ReviewId1,
+                        principalTable: "Reviews",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UsersLikes",
+                columns: table => new
+                {
+                    ReviewId = table.Column<int>(nullable: false),
+                    AuthorId = table.Column<string>(nullable: false),
+                    ReviewId1 = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UsersLikes", x => new { x.AuthorId, x.ReviewId });
+                    table.ForeignKey(
+                        name: "FK_UsersLikes_AspNetUsers_AuthorId",
+                        column: x => x.AuthorId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UsersLikes_Reviews_ReviewId1",
+                        column: x => x.ReviewId1,
+                        principalTable: "Reviews",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -191,6 +314,36 @@ namespace CinemateAPI.Data.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Comment_AuthorId",
+                table: "Comment",
+                column: "AuthorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Comment_ReviewId1",
+                table: "Comment",
+                column: "ReviewId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reviews_AuthorId",
+                table: "Reviews",
+                column: "AuthorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reviews_MovieDetailsId",
+                table: "Reviews",
+                column: "MovieDetailsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UsersFavourites_MovieDetailsId",
+                table: "UsersFavourites",
+                column: "MovieDetailsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UsersLikes_ReviewId1",
+                table: "UsersLikes",
+                column: "ReviewId1");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -211,10 +364,25 @@ namespace CinemateAPI.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Comment");
+
+            migrationBuilder.DropTable(
+                name: "UsersFavourites");
+
+            migrationBuilder.DropTable(
+                name: "UsersLikes");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "Reviews");
+
+            migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "MoviesDetails");
         }
     }
 }

@@ -16,13 +16,11 @@
 
     public class ReviewController : ApiController
     {
-        private readonly CinemateDbContext db;
         private readonly IHttpContextAccessor httpContextAccessor;
         private readonly IReviewService reviewService;
 
-        public ReviewController(CinemateDbContext db, IHttpContextAccessor httpContextAccessor, IReviewService reviewService)
+        public ReviewController(IHttpContextAccessor httpContextAccessor, IReviewService reviewService)
         {
-            this.db = db;
             this.httpContextAccessor = httpContextAccessor;
             this.reviewService = reviewService;
         }
@@ -30,36 +28,25 @@
         [HttpGet]
         [Route(nameof(GetAllReviews))]
         public async Task<IList<ReviewResponseModel>> GetAllReviews()
-        {
-            var reviews = await db.Reviews
-                .Select(r => new ReviewResponseModel
-                {
-                    Title = r.Summary,
-                    Author = r.Author.UserName,
-                    CreatedDate = r.CreationDate,
-                    Content = r.Content,
-                    Votes = r.UsersLikes.Count,
-                    MovieImageUrl = r.MovieDetails.ImageUrl,
-                    MovieTitle = r.MovieDetails.Title
+            => await this.reviewService.GetAllReviews();
 
-                }).ToListAsync();
-
-            return reviews;
-        }
+        [HttpGet]
+        [Route(nameof(GetReviewById))]
+        public async Task<ReviewResponseModel> GetReviewById(string id)
+            => await this.reviewService.GetReviewById(id);
 
         [HttpPost]
         [Route(nameof(CreateReview))]
-        public async Task<int> CreateReview(CreateReviewRequestModel input)
+        public async Task<string> CreateReview(CreateReviewRequestModel input)
         {
             var user = this.httpContextAccessor.HttpContext?.User;
             Console.WriteLine(user.Identity.Name);
-            
 
             // Validate input data here
 
             var result = await this.reviewService.CreateReview(input);
 
-            return 1;
+            return result;
         }
     }
 }

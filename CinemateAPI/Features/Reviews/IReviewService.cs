@@ -1,10 +1,16 @@
 ﻿namespace CinemateAPI.Features.Reviews
 {
-    using CinemateAPI.Features.Reviews.Models;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
+
+    using CinemateAPI.Features.Reviews.Models;
 
     public interface IReviewService
     {
-        public Task<bool> CreateReview(CreateReviewRequestModel input);
+        Task<string> CreateReview(CreateReviewRequestModel input);
+
+        Task<IList<ReviewResponseModel>> GetAllReviews();
+
+        Task<ReviewResponseModel> GetReviewById(string id);
     }
 }
