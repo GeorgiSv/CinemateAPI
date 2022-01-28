@@ -4,6 +4,8 @@
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
+    using static DataValidations.Review;
+
     public class Review
     {
         public Review()
@@ -16,11 +18,11 @@
         public string Id { get; set; }
 
         [Required]
-        [MaxLength(150)]
+        [MaxLength(MaxTitleLength)]
         public string Summary { get; set; }
 
         [Required]
-        [MaxLength(2000)]
+        [MaxLength(MaxContentLength)]
         public string Content { get; set; }
 
         public DateTime CreationDate { get; set; }

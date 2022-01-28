@@ -1,27 +1,21 @@
 ﻿namespace CinemateAPI.Features.Reviews
 {
-    using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
 
-    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore;
 
-    using CinemateAPI.Data;
-    using CinemateAPI.Data.Models;
     using CinemateAPI.Features.Reviews.Models;
-    using System.Net.Http;
+    using CinemateAPI.Features.User;
 
     public class ReviewController : ApiController
     {
-        private readonly IHttpContextAccessor httpContextAccessor;
+        private readonly ICurrentUserService userService;
         private readonly IReviewService reviewService;
 
-        public ReviewController(IHttpContextAccessor httpContextAccessor, IReviewService reviewService)
+        public ReviewController(ICurrentUserService userService, IReviewService reviewService)
         {
-            this.httpContextAccessor = httpContextAccessor;
+            this.userService = userService;
             this.reviewService = reviewService;
         }
 
@@ -39,12 +33,29 @@
         [Route(nameof(CreateReview))]
         public async Task<string> CreateReview(CreateReviewRequestModel input)
         {
-            var user = this.httpContextAccessor.HttpContext?.User;
-            Console.WriteLine(user.Identity.Name);
+            var userId = this.userService.GetId();
+            var result = await this.reviewService.CreateReview(input, userId);
 
-            // Validate input data here
+            return result;
+        }
 
-            var result = await this.reviewService.CreateReview(input);
+
+        //[HttpPut]
+        //[Route(nameof(UpdateReview))]
+        //public async Task<string> UpdateReview(CreateReviewRequestModel input)
+        //{
+        //    // Validate input data here
+        //    var result = await this.reviewService.edit(input);
+
+        //    return result;
+        //}
+
+        [HttpDelete]
+        [Route(nameof(DeleteReview))]
+        public async Task<string> DeleteReview(string id)
+        {
+            var userId = this.userService.GetId();
+            var result = await this.reviewService.DeleteReview(id, userId);
 
             return result;
         }

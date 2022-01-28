@@ -17,6 +17,7 @@ namespace CinemateAPI
     using CinemateAPI.Infrastructure.MovieDb;
     using CinemateAPI.Features.Reviews;
     using System.Linq;
+    using CinemateAPI.Features.User;
 
     public class Startup
     {
@@ -61,6 +62,7 @@ namespace CinemateAPI
             });
 
             services.AddTransient<IIdentityService, IdentityService>();
+            services.AddTransient<ICurrentUserService, CurrentUserService>();
             services.AddTransient<IReviewService, ReviewService>();
             services.AddTransient<MovieDbService>();
 

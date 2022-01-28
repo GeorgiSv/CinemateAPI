@@ -23,7 +23,7 @@
             this.movieDbService = movieDbService;
         }
 
-        public async Task<string> CreateReview(CreateReviewRequestModel input)
+        public async Task<string> CreateReview(CreateReviewRequestModel input, string userId)
         {
             try
             {
@@ -39,16 +39,14 @@
 
                 var review = new Review()
                 {
-                    AuthorId = input.AuthorId,
+                    AuthorId = userId,
                     Summary = input.Title,
                     Content = input.Content,
                     MovieDetailsId = movieDetailsId,
                     CreationDate = DateTime.Now
                 };
 
-                var result = await this.db.Reviews.AddAsync(review);
-                Console.WriteLine(result);
-
+                await this.db.Reviews.AddAsync(review);
                 await db.SaveChangesAsync();
 
                 return review.Id;
@@ -56,13 +54,27 @@
             catch (Exception ex)
             {
                 Console.WriteLine("Error: " + ex.Message);
-                return null;
+                return "Failed to create review!";
             }
         }
 
-        public async Task<IList<ReviewResponseModel>> GetAllReviews()
+        public async Task<string> DeleteReview(string id, string userId)
         {
-            var reviews = await this.db.Reviews
+            var review = await GetByIdAndUserId(id, userId);
+
+            if (review == null)
+            {
+                return "User cannot delete this review!";
+            }
+
+            this.db.Reviews.Remove(review);
+            await this.db.SaveChangesAsync();
+
+            return "Review deleted successfully!";
+        }
+
+        public async Task<IList<ReviewResponseModel>> GetAllReviews()
+            => await this.db.Reviews
                    .Select(r => new ReviewResponseModel
                    {
                        Id = r.Id,
@@ -75,9 +87,6 @@
                        MovieTitle = r.MovieDetails.Title
                    })
                    .ToListAsync();
-
-            return reviews;
-        }
 
         public async Task<ReviewResponseModel> GetReviewById(string id)
             => await this.db.Reviews
@@ -121,5 +130,10 @@
                 throw ex;
             }
         }
+
+        private async Task<Review> GetByIdAndUserId(string reviewId, string userId)
+            => await this.db.Reviews
+                        .Where(x => x.Id == reviewId && x.AuthorId == userId)
+                        .FirstOrDefaultAsync();
     }
 }

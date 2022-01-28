@@ -3,12 +3,14 @@
     using System;
     using System.ComponentModel.DataAnnotations;
 
+    using static DataValidations.Review;
+
     public class Comment
     {
         public int Id { get; set; }
 
         [Required]
-        [MaxLength(2000)]
+        [MaxLength(MaxContentLength)]
         public string Content { get; set; }
 
         public DateTime CreationDate { get; set; }
